@@ -5,3 +5,28 @@
 	padding:2%;
 }
 
+.errors {
+	color: red;
+}
+
+#wrapper{
+	margin-left: 20px;
+	margin-top: 20px;
+}
+
+.header {
+	display: inline-block;
+}
+
+#logout {
+	margin-left: 500px;
+}
+
+
+fieldset {
+   	width: 300px;
+   }
+
+.profile{
+	padding-left: 700px;
+}

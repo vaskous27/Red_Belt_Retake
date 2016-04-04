@@ -51,7 +51,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 // this is the default controller. You need to change it depending on your project
-$route['default_controller'] = 'Pokes/registration';
-$route['main'] = 'Pokes/main';
+$route['default_controller'] = 'Friends/registration';
+$route['main'] = 'Friends/main';
+$route['friend/(:any)'] = 'Friends/friendDeets/$1';
+$route['delete/(:any)'] = 'Friends/deleteFriend/$1';
+$route['add/(:any)'] = 'Friends/addFriend/$1';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
