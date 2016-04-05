@@ -8,7 +8,7 @@
 
    <body>
       <div id="container">
-       <div class = 'header'>Hello, <?php echo $this->session->userdata['user_alias']; ?>!</div>
+       <div class = 'header'>Hello, <?php echo $this->session->userdata("currentUser")['alias']; ?>!</div>
           <div class='header' id='logout'><a href='/Friends/logout'>Logout</a></div>
 
 <?php 

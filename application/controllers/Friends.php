@@ -12,8 +12,8 @@ class Friends extends CI_Controller {
 
 		public function main() {
 		$this->load->model('Friend');
-		$allfriends['friends'] = $this->Friend->GetFriends($this->session->userdata['user_id']);
-		$allfriends['notFriends'] = $this->Friend->getNotFriends($this->session->userdata['user_id']);
+		$allfriends['friends'] = $this->Friend->GetFriends($this->session->userdata("currentUser")['id']);
+		$allfriends['notFriends'] = $this->Friend->getNotFriends($this->session->userdata("currentUser")['id']);
 		$this->load->view('MainPage', $allfriends);
 	}
 
@@ -41,20 +41,19 @@ class Friends extends CI_Controller {
 
 		else {
 			$this->load->model('Friend');
-			$user_details = array(
-				'name' => $this->input->post('name'),
-				'alias' => $this->input->post('alias'),
-				'email' => $this->input->post('email'),
-				'password' => $this->input->post('password'),
-				'dob' => $this->input->post('dob')
-				);
+			$user_details = $this->Friend->InsertInfo($this->input->post());
 
-			$insert_info = $this->Friend->InsertInfo($user_details);
-			redirect('/main');
+			if ($user_details) {
+				$this->session->set_userdata('currentUser', $user_details);
+			}
+			redirect('/');
 	    }
 	}
 
 	public function login() {
+
+		$this->load->model('Friend');
+
 		$this->load->library("form_validation");
 		$this->form_validation->set_rules("email2", "email", "trim|required|valid_email");
 		$this->form_validation->set_rules("password2", "Password", "trim|required");
@@ -65,19 +64,10 @@ class Friends extends CI_Controller {
 		}
 
 		else {
-			$email = $this->input->post('email2');
-			$password = md5($this->input->post('password2'));
-			$this->load->model('Friend');
-			$user= $this->Friend->RetrieveInfo($email);
+			$user = $this->Friend->RetrieveInfo($this->input->post());
 
-			if($user && $user['password'] == $password) {
-				$logger = array(
-					'user_id' => $user['id'],
-					'user_email' => $user['email'],
-					'user_alias' => $user['alias'],
-					'is_logged_in' => true);
-
-				$this->session->set_userdata($logger);
+			if ($user) {
+				$this->session->set_userdata('currentUser', $user);
 				redirect('/main');
 			}
 			else {

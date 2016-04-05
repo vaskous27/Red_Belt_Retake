@@ -12,12 +12,16 @@ class Friend extends CI_Model {
 		$query = "INSERT INTO users(name, alias, email, password, dob, created_at, updated_at) VALUES(?,?,?,?,?,NOW(),NOW())";
 		$values = array($user_details['name'], $user_details['alias'], $user_details['email'], $user_details['password'], $user_details['dob']);
 
-	 	  return $this->db->query($query, $values); 		
+	 	  $this->db->query($query, $values); 
+	 	  $newUserID = $this->db->insert_id();		
 	}
 
-	public function RetrieveInfo($email) {
+	public function RetrieveInfo($user) {
 
-		return $this->db->query("SELECT * FROM users WHERE email = ?", array($email)) -> row_array();
+		$query = "SELECT * FROM users WHERE email=? AND password=?";
+			$pw = md5($user['password2']);
+			$values = array($user['email2'], $pw);
+			return $this->db->query($query, $values)->row_array();
 	}
 
 	public function GetFriends($id) {
@@ -32,9 +36,9 @@ class Friend extends CI_Model {
 
 	public function delete($friend_id) {
 
-		$this->db->query("DELETE FROM friendships WHERE user_id = ? AND friend_id = ?", array($this->session->userdata['user_id'], $friend_id));
+		$this->db->query("DELETE FROM friendships WHERE user_id = ? AND friend_id = ?", array($this->session->userdata("currentUser")['id'], $friend_id));
 
-		$this->db->query("DELETE FROM friendships WHERE user_id = ? AND friend_id = ?", array($friend_id, $this->session->userdata['user_id']));
+		$this->db->query("DELETE FROM friendships WHERE user_id = ? AND friend_id = ?", array($friend_id, $this->session->userdata("currentUser")['id']));
 	}
 
 	public function friendData($friend_id) {
@@ -44,10 +48,10 @@ class Friend extends CI_Model {
 
 	function add($friend_id) {
 		$query = "INSERT INTO friendships(user_id, friend_id) VALUES(?,?)";
-		$values = array($friend_id, $this->session->userdata['user_id']);
+		$values = array($friend_id, $this->session->userdata("currentUser")['id']);
 		 $this->db->query($query, $values);
 
-		 $values2 = array($this->session->userdata['user_id'], $friend_id);
+		 $values2 = array($this->session->userdata("currentUser")['id'], $friend_id);
 		 $this->db->query($query, $values2);
         }
 }
